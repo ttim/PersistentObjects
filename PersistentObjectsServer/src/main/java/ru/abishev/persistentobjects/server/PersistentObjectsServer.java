@@ -123,7 +123,7 @@ public class PersistentObjectsServer extends Service<HttpRequest, HttpResponse> 
     }
 
     public static void main(String[] args) {
-        Server server = create(5678);
-        System.out.println("Server is running");
+        Server server = create(Integer.parseInt(args[0]));
+        System.out.println("Server is running at port " + args[0]);
     }
 }
