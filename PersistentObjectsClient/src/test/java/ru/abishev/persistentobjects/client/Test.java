@@ -10,6 +10,7 @@ public class Test {
 
         public TestObject(String helloPrefix) {
             this.helloPrefix = helloPrefix;
+            System.out.println("Test object is created");
         }
 
         public String sayHello(String suffix) {

@@ -13,11 +13,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class PersistentObjectsServer extends Service<HttpRequest, HttpResponse> {
-    private Map<String, Integer> requestToToken = new HashMap<String, Integer>();
+    private Map<List<Byte>, Integer> requestToToken = new HashMap<List<Byte>, Integer>();
     private Map<Integer, Object> tokenToObject = new HashMap<Integer, Object>();
     private int tokenNum = 0;
 
@@ -45,11 +44,17 @@ public class PersistentObjectsServer extends Service<HttpRequest, HttpResponse> 
         ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(request));
         byte type = input.readByte();
         if (type == 1) {
-            if (requestToToken.containsKey(request)) {
-                return requestToToken.get(request);
+            List<Byte> requestList = new ArrayList<Byte>();
+            for (byte b : request) {
+                requestList.add(b);
+            }
+            if (requestToToken.containsKey(requestList)) {
+                return requestToToken.get(requestList);
             } else {
                 try {
-                    return createObjectAndGetToken(input.readUTF(), (URL[]) input.readObject(), (Object[]) input.readObject());
+                    int token = createObjectAndGetToken(input.readUTF(), (URL[]) input.readObject(), (Object[]) input.readObject());
+                    requestToToken.put(requestList, token);
+                    return token;
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException();
                 }
