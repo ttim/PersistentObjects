@@ -32,7 +32,7 @@ class Client {
         ObjectOutputStream outputStream = new ObjectOutputStream(data);
 
         outputStream.writeByte(1);
-        outputStream.writeUTF(implClazz.getCanonicalName());
+        outputStream.writeUTF(implClazz.getName());
         outputStream.writeObject(loader.getURLs());
         outputStream.writeObject(args);
 
